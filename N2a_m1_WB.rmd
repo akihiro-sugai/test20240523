@@ -1,0 +1,102 @@
+---
+title: "N2a_m1_WB"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+# Data
+```{r}
+data <- read_csv("data/N2a_m1_WB_32kDa.csv") %>% 
+  transform(ASO= factor(ASO, levels = c("Ctrl", "m1")))
+```
+
+
+# Test
+## test of equivariance
+```{r}
+bartlett.test(X43kDa_TDP.43.43kDtoGAPDH_r ~ ASO, data=data)
+bartlett.test(X32kDa_TDP.43.43kDtoGAPDH_r ~ ASO, data=data)
+```
+## F test
+```{r}
+var.test(X43kDa_TDP.43.43kDtoGAPDH_r ~ ASO, alternative='two.sided', conf.level=0.95, data=data)
+var.test(X32kDa_TDP.43.43kDtoGAPDH_r ~ ASO, alternative='two.sided', conf.level=0.95, data=data)
+
+```
+## Two Sample t-test
+```{r}
+t.test(X43kDa_TDP.43.43kDtoGAPDH_r ~ factor(ASO), alternative='two.sided',  conf.level=0.95, var.equal=TRUE, data=data)
+t.test(X32kDa_TDP.43.43kDtoGAPDH_r ~ factor(ASO), alternative='two.sided',  conf.level=0.95, var.equal=TRUE, data=data)
+```
+
+# Plot
+## 43 kDa
+```{r}
+g_43 <- data %>% 
+  ggplot(aes(x=ASO, y=X43kDa_TDP.43.43kDtoGAPDH_r, fill=ASO, group=ASO)) +
+  stat_summary(fun=mean, geom="bar", fill="gray", 
+               size = 0.6, alpha=0.7, width = 0.6, 
+               position = position_dodge(width = .7),
+               color = "black") + 
+  stat_summary(fun.data = mean_se, geom = "errorbar",
+               alpha=1, size=0.6, width=0.3, 
+               position=position_dodge(.7)) + 
+  geom_point(aes(group=ASO), shape = 1, size=3, alpha=1, 
+             position = position_jitterdodge(dodge.width = .7, jitter.width = 0.4)) +
+  scale_y_continuous(limits = c(0, 2), 
+                     expand = c(0,0)) +
+  labs(y = "43 kDa TDP-43 / GAPDH") + 
+  theme_classic(base_size = 12) +
+  theme(legend.position = "None",
+        legend.text = element_text(size=10),
+        legend.title = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(vjust = 0, angle=90,size=14),
+        axis.text.x = element_text(size=14, angle=0, colour="black"),
+        axis.text.y = element_text(size=10,colour="black"),
+        axis.line = element_line(size = 0.7))
+g_43
+
+ggsave("figure/N2a_m1_43kDa.png", g_43, scale = 1,  width = 2, height = 3, dpi = 500)
+```
+
+## 32 kDa
+```{r}
+g_32 <- data %>% 
+  ggplot(aes(x=ASO, y=X32kDa_TDP.43.43kDtoGAPDH_r, fill=ASO, group=ASO)) +
+  stat_summary(fun=mean, geom="bar", fill="gray", 
+               size = 0.6, alpha=0.7, width = 0.6, 
+               position = position_dodge(width = .7),
+               color = "black") + 
+  stat_summary(fun.data = mean_se, geom = "errorbar",
+               alpha=1, size=0.6, width=0.3, 
+               position=position_dodge(.7)) + 
+  geom_point(aes(group=ASO), shape = 1, size=3, alpha=1, 
+             position = position_jitterdodge(dodge.width = .7, jitter.width = 0.4)) +
+  scale_y_continuous(limits = c(0, 1.5), 
+                     expand = c(0,0)) +
+  labs(y = "32 kDa TDP-43 / GAPDH") + 
+  theme_classic(base_size = 12) +
+  theme(legend.position = "None",
+        legend.text = element_text(size=10),
+        legend.title = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(vjust = 0, angle=90,size=14),
+        axis.text.x = element_text(size=14, angle=0, colour="black"),
+        axis.text.y = element_text(size=10,colour="black"),
+        axis.line = element_line(size = 0.7))
+g_32
+
+ggsave("figure//N2a_m1_32kDa.png", g_32, scale = 1,  width = 2, height = 3, dpi = 500)
+```
