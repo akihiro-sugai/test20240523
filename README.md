@@ -1,2 +1,2 @@
 This is test for GitHub.
-[N2a_m1_WB.html](N2a_m1_WB.html)
+[Figure data and code](https://akihiro-sugai.github.io/test20240523/N2a_m1_WB.html)
